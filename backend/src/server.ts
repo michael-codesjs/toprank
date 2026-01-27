@@ -1,4 +1,3 @@
-
 import cors from 'cors';
 import express from 'express';
 import http from 'http';
@@ -8,6 +7,7 @@ export async function createServer() {
   const app = express();
   const httpServer = http.createServer(app);
 
+  app.use(express.json());
   app.use(
     cors<cors.CorsRequest>({
       origin: true, // Allow reflected origin
