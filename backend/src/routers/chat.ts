@@ -86,4 +86,67 @@ router.post('/workflow', async (req: any, res: any) => {
   }
 });
 
+// Independent Step 1: Extract (Search + Structure)
+router.post('/extract', async (req: any, res: any) => {
+  const { domain } = req.body;
+  if (!domain) return res.status(400).json({ error: 'Domain is required' });
+
+  try {
+    const { searchAmazon } = require('../clients/serper');
+    const { extractorAgent } = require('../mastra/agents/extractor');
+    const { ExtractionSchema } = require('../mastra/schema');
+
+    const brandName = domain.includes('.') ? domain.split('.')[0] : domain;
+
+    // 1. Search
+    const rawResults = await searchAmazon(brandName);
+
+    // 2. Extract Structure
+    const result = await extractorAgent.generate(
+      `Structure the following search results for brand "${brandName}" into clean JSON.
+      Search Results: ${JSON.stringify(rawResults)}`,
+      {
+        structuredOutput: { schema: ExtractionSchema as any },
+      },
+    );
+
+    return res.json(result.object);
+  } catch (error: any) {
+    console.error('Extraction failed:', error);
+    return res.status(500).json({ error: error.message });
+  }
+});
+
+// Independent Step 2: Analyze (Consumes JSON -> Produces Insights)
+router.post('/analyze', async (req: any, res: any) => {
+  const structuredData = req.body;
+
+  if (!structuredData || Object.keys(structuredData).length === 0) {
+    return res.status(400).json({ error: 'Structured data JSON is required' });
+  }
+
+  try {
+    const { analystAgent } = require('../mastra/agents/analyst');
+    const { ExtractionSchema } = require('../mastra/schema');
+
+    // We can infer brand name from products or just generic
+    const brandName = structuredData.primary_category || 'the brand';
+
+    const result = await analystAgent.generate(
+      `Analyze this structured Amazon data:
+      ${JSON.stringify(structuredData)}
+      
+      Generate 3 strategic business insights and return the completed report.`,
+      {
+        structuredOutput: { schema: ExtractionSchema as any },
+      },
+    );
+
+    return res.json(result.object);
+  } catch (error: any) {
+    console.error('Analysis failed:', error);
+    return res.status(500).json({ error: error.message });
+  }
+});
+
 export default router;

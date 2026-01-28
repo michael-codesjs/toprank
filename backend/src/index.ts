@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import 'dotenv/config';
 import { createServer } from './server';
 
-const PORT = process.env.API_PORT || 4000 || 4001;
+const PORT = process.env.APP_PORT || 4000;
 
 createServer()
   .then(({ httpServer }) => {

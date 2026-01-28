@@ -1,6 +1,5 @@
 import 'dotenv/config';
 import axios from 'axios';
-
 // The env variable name is SERPER_API_KEY but contains a SerpApi key
 const SERPAPI_KEY = process.env.SERPER_API_KEY;
 

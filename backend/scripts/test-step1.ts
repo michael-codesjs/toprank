@@ -1,5 +1,9 @@
 import { extractStep } from '../src/mastra/workflows';
-import { mastra } from '../src/mastra';
+import dotenv from 'dotenv';
+import path from 'path';
+
+// Load env vars from parent directory
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 async function main() {
   console.log('Testing Step 1: Extraction...');

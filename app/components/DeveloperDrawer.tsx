@@ -4,42 +4,26 @@ import { useState } from 'react';
 import { Code1, CloseCircle, Copy, TickCircle } from 'iconsax-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../lib/utils';
-
-const mockRawData = {
-  meta: {
-    target: 'patagonia.com',
-    timestamp: '2026-01-27T23:14:00Z',
-    agent_version: 'v2.4.1',
-  },
-  extraction: {
-    source: 'SerperDev::GoogleShopping',
-    depth: 'deep_crawl',
-    nodes_visited: 142,
-  },
-  analysis: {
-    model: 'claude-3-5-sonnet',
-    tokens_in: 14520,
-    tokens_out: 850,
-    sentiment: 'positive',
-    audit_score: 98,
-  },
-  inventory_snapshot: [
-    { id: 'sku-9921', name: 'Better Sweater', stock_status: 'in_stock' },
-    { id: 'sku-2210', name: 'Nano Puff', stock_status: 'low_stock' },
-  ],
-  insights_raw: [
-    'Sustainability_Messaging_Gap::High_Confidence',
-    'Price_Elasticity::Medium_Confidence',
-    'Stock_Velocity::Warning',
-  ],
-};
+import { usePipelineStore } from '../store/pipelineStore';
 
 export default function DeveloperDrawer() {
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  const { results, logs, domain, phase } = usePipelineStore();
+
+  const debugData = {
+    meta: {
+      target: domain || 'No domain selected',
+      status: phase,
+      timestamp: new Date().toISOString(),
+    },
+    pipeline_trace: logs,
+    final_output: results || 'Waiting for completion...',
+  };
+
   const handleCopy = () => {
-    navigator.clipboard.writeText(JSON.stringify(mockRawData, null, 2));
+    navigator.clipboard.writeText(JSON.stringify(debugData, null, 2));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -69,12 +53,17 @@ export default function DeveloperDrawer() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed right-0 top-0 bottom-0 w-[500px] bg-[#050505] border-l border-[#333333] shadow-2xl z-1000 flex flex-col"
+              className="fixed right-0 top-0 bottom-0 w-[500px] bg-[#050505] border-l border-[#333333] shadow-2xl z-1000 flex flex-col pt-16 md:pt-0"
             >
               <div className="flex items-center justify-between p-4 border-b border-[#333333]">
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                  <span className="font-mono text-sm text-white">Latest Extract Logs</span>
+                  <div
+                    className={cn(
+                      'w-2 h-2 rounded-full animate-pulse',
+                      phase === 'COMPLETE' ? 'bg-green-500' : 'bg-yellow-500',
+                    )}
+                  />
+                  <span className="font-mono text-sm text-white">Live Pipeline Logs</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
@@ -99,7 +88,7 @@ export default function DeveloperDrawer() {
               <div className="flex-1 overflow-auto p-4 custom-scrollbar bg-black">
                 <pre className="text-xs font-mono leading-relaxed">
                   <code className="language-json text-gray-300">
-                    {JSON.stringify(mockRawData, null, 2)}
+                    {JSON.stringify(debugData, null, 2)}
                   </code>
                 </pre>
               </div>

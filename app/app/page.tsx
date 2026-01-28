@@ -20,27 +20,48 @@ export default function Home() {
       return;
     }
 
-    const domainRegex =
-      /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$/i;
-    if (!domainRegex.test(inputValue)) {
-      toast.error('Invalid domain format. Use format: domain.com');
+    let cleanInput = inputValue.trim();
+
+    // Remove protocol for URL constructor consistency check, but we need it for the constructor
+    // Strategy: always prepend https:// if not present to extract hostname
+    if (!cleanInput.match(/^https?:\/\//)) {
+      cleanInput = 'https://' + cleanInput;
+    }
+
+    let finalDomain = '';
+    try {
+      const urlObj = new URL(cleanInput);
+      finalDomain = urlObj.hostname;
+    } catch (e) {
+      toast.error('Invalid URL format');
       return;
     }
 
-    setDomain(inputValue);
+    // Validate compliance: Must have at least one dot and end with a TLD of 2+ letters
+    // This allows zambia.steers.africa, google.com, etc.
+    const domainValidationRegex = /^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/;
+    if (!domainValidationRegex.test(finalDomain)) {
+      toast.error('Invalid domain. Must be a valid hostname ending in a TLD (e.g. .com, .africa)');
+      return;
+    }
+
+    // Update state to show the cleaned domain
+    setInputValue(finalDomain);
+
+    setDomain(finalDomain);
     setPhase('EXTRACTING');
     reset(); // clear previous results/logs but keep domain
-    setDomain(inputValue);
+    setDomain(finalDomain);
     setPhase('EXTRACTING');
 
-    addLog('Agent initialized with domain target: ' + inputValue);
+    addLog('Agent initialized with domain target: ' + finalDomain);
     addLog('Connecting to backend workflow engine...');
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chat/workflow`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ domain: inputValue }),
+        body: JSON.stringify({ domain: finalDomain }),
       });
 
       if (!response.ok) throw new Error('Workflow failed');

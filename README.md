@@ -76,23 +76,42 @@ _The frontend runs on http://localhost:3000._
 
 **Step 1: Data Extraction Only**
 
+Option A: Run the convenience script (mocks the pipeline step):
+
+```bash
+cd backend
+npm run test:step1
+```
+
+Option B: Hit the API endpoint directly:
+
 ```bash
 curl -X POST http://localhost:8000/api/chat/extract \
   -H "Content-Type: application/json" \
   -d '{"domain": "patagonia.com"}'
 ```
 
-_Note: This endpoint streams Server-Sent Events (SSE). Use a client that supports SSE or view the raw stream._
+_Note: The API endpoint returns Server-Sent Events (SSE)._
 
 **Step 2: Strategic Analysis Only**
-You can feed any JSON matching the schema to generate insights:
+
+Option A: Run the convenience script:
+
+```bash
+cd backend
+npm run test:step2
+```
+
+Option B: Hit the API endpoint with a valid JSON payload:
 
 ```bash
 curl -X POST http://localhost:8000/api/chat/analyze \
   -H "Content-Type: application/json" \
   -d '{
     "amazon_presence": true,
-    "top_products": [{"name": "Test Product", "price": "$20", "rating": 4.5}],
+    "confidence_level": "High",
+    "primary_category": "Example Category",
+    "top_products": [{"name": "Test Product", "price": "$20", "rating": "4.5/5", "url": "http://example.com"}],
     "estimated_product_count": "50+"
   }'
 ```
@@ -106,7 +125,7 @@ _Returns: JSON object with 3 strategic insights._
 ### 1. LLM: Claude 3.5 Sonnet
 
 **Choice**: `claude-3-5-sonnet-20241022`
-**Justification**: The assessment requires high-fidelity data extraction from unstructured HTML/text and nuanced strategic reasoning. Sonnet offers the best balance of reasoning capability and speed for this task, superior to GPT-3.5 or Haiku for minimizing hallucinations in the "Insights" phase.
+**Justification**: The assessment requires high-fidelity data extraction from noisy search results and raw text data, alongside nuanced strategic reasoning. Sonnet offers the best balance of reasoning capability and speed for this task, superior to GPT-3.5 or Haiku for minimizing hallucinations in the "Insights" phase.
 
 ### 2. Search API: Serper.dev
 
