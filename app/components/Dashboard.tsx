@@ -40,6 +40,51 @@ export default function Dashboard() {
     return LampOn;
   };
 
+  if (results && results.amazon_presence === false) {
+    return (
+      <motion.div
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="w-full max-w-2xl mx-auto text-center space-y-8 py-20"
+      >
+        <div className="bg-[#0A0A0A] border border-[#333333] p-12 rounded-3xl space-y-6">
+          <div className="w-20 h-20 bg-white/5 border border-white/10 rounded-full flex items-center justify-center mx-auto text-white/40">
+            <Bag2 size={40} color="currentColor" />
+          </div>
+          <div className="space-y-2">
+            <h2 className="text-3xl font-bold text-white tracking-tight">No Brand Presence</h2>
+            <p className="text-gray-400 max-w-sm mx-auto">
+              Our agents analyzed Amazon for{' '}
+              <span className="text-white font-medium">{domain}</span> but could not find an
+              official storefront or significant product listings.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-4 text-left">
+            <div className="bg-[#111] p-4 rounded-xl border border-[#222]">
+              <span className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">
+                Confidence
+              </span>
+              <div className="text-white font-medium">{results.confidence_level}</div>
+            </div>
+            <div className="bg-[#111] p-4 rounded-xl border border-[#222]">
+              <span className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">
+                Category
+              </span>
+              <div className="text-white font-medium">{results.primary_category || 'N/A'}</div>
+            </div>
+          </div>
+          <button
+            onClick={() => usePipelineStore.getState().reset()}
+            className="w-full py-4 bg-white text-black font-bold rounded-xl hover:bg-gray-200 transition-colors"
+          >
+            Run Another Audit
+          </button>
+        </div>
+      </motion.div>
+    );
+  }
+
   return (
     <motion.div
       variants={container}

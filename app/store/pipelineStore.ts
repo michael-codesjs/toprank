@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-type PipelinePhase = 'IDLE' | 'EXTRACTING' | 'ANALYZING' | 'COMPLETE';
+type PipelinePhase = 'IDLE' | 'EXTRACTING' | 'ANALYZING' | 'COMPLETE' | 'ERROR';
 
 interface PipelineState {
   phase: PipelinePhase;

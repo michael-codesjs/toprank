@@ -96,7 +96,8 @@ export default function Home() {
                 setPhase('COMPLETE');
               } else if (event.type === 'error') {
                 addLog('Error: ' + event.error);
-                setPhase('IDLE');
+                toast.error(event.error || 'Pipeline execution failed');
+                setPhase('ERROR');
               }
             } catch (e) {
               console.error('Error parsing SSE:', e);
@@ -106,8 +107,10 @@ export default function Home() {
       }
     } catch (error) {
       console.error('Audit failed:', error);
-      addLog('Error: ' + (error instanceof Error ? error.message : 'Unknown error'));
-      setPhase('IDLE');
+      const msg = error instanceof Error ? error.message : 'Unknown error';
+      addLog('Error: ' + msg);
+      toast.error(msg);
+      setPhase('ERROR');
     }
   };
 
@@ -216,6 +219,34 @@ export default function Home() {
               animate={{ opacity: 1 }}
             >
               <Dashboard />
+            </motion.div>
+          )}
+
+          {/* PHASE 4: ERROR */}
+          {phase === 'ERROR' && (
+            <motion.div
+              key="error"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="w-full max-w-lg mx-auto text-center space-y-6"
+            >
+              <div className="bg-[#110000] border border-red-900/50 p-8 rounded-2xl space-y-4">
+                <div className="w-16 h-16 bg-red-500/10 border border-red-500/20 rounded-full flex items-center justify-center mx-auto text-red-500">
+                  <span className="text-3xl">!</span>
+                </div>
+                <h2 className="text-2xl font-bold text-white">Pipeline Failure</h2>
+                <p className="text-gray-400">
+                  The agent encountered an error while analyzing the brand. Check the developer logs
+                  for more details.
+                </p>
+                <button
+                  onClick={reset}
+                  className="px-8 py-3 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-colors"
+                >
+                  Try Another Audit
+                </button>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
