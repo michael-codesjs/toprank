@@ -1,6 +1,6 @@
 # Agentic Brand Presence Pipeline
 
-This project is a sophisticated AI-powered pipeline designed to analyze a brand's presence on Amazon. It strictly follows the "Challenge" requirements, utilizing a modern agentic architecture to transform a domain input into actionable strategic insights without manual intervention.
+This project is a sophisticated AI-powered pipeline designed to analyze a brand's presence on Amazon. It utilizes a modern agentic architecture to transform a domain input into actionable strategic insights without manual intervention.
 
 ## 🚀 Architecture
 
@@ -125,20 +125,20 @@ _Returns: JSON object with 3 strategic insights._
 ### 1. LLM: Claude 3.5 Sonnet
 
 **Choice**: `claude-3-5-sonnet-20241022`
-**Justification**: The assessment requires high-fidelity data extraction from noisy search results and raw text data, alongside nuanced strategic reasoning. Sonnet offers the best balance of reasoning capability and speed for this task, superior to GPT-3.5 or Haiku for minimizing hallucinations in the "Insights" phase.
+**Why this stack?**: The project requires high-fidelity data extraction from noisy search results and raw text data, alongside nuanced strategic reasoning. Sonnet offers the best balance of reasoning capability and speed for this task, superior to GPT-3.5 or Haiku for minimizing hallucinations in the "Insights" phase.
 
 ### 2. Search API: Serper.dev
 
 **Choice**: Google Shopping & Search via Serper.
-**Justification**: Direct Amazon scraping (via Puppeteer/Selenium) is brittle due to frequent DOM changes and anti-bot measures. Serper provides structured Google Shopping data which acts as a reliable proxy for Amazon inventory, pricing, and ratings without the maintenance overhead of a custom scraper.
+**Why this stack?**: Direct Amazon scraping (via Puppeteer/Selenium) is brittle due to frequent DOM changes and anti-bot measures. Serper provides structured Google Shopping data which acts as a reliable proxy for Amazon inventory, pricing, and ratings without the maintenance overhead of a custom scraper.
 
 ### 3. Agent Framework: Mastra
 
-**Justification**: Provides a structured way to define tools, workflows, and schemas. It handles the "glue" between the LLM and the tools, ensuring type safety with Zod schemas.
+**Why this stack?**: Provides a structured way to define tools, workflows, and schemas. It handles the "glue" between the LLM and the tools, ensuring type safety with Zod schemas.
 
 ---
 
-## 📋 Methodology
+## 📋 How it Works
 
 1.  **Prompt Engineering**:
     - **Persona**: "Advanced E-commerce Intelligence Analyst" ensures the model adopts a critical, objective tone.
@@ -154,10 +154,10 @@ _Returns: JSON object with 3 strategic insights._
 
 ## ⏱️ Time Log (Estimated) & Demo Plan
 
-- **Step 1 (Extraction Logic)**: ~1.5 hours
-- **Step 2 (Analysis & Insights)**: ~1 hour
-- **Frontend & Visualization**: ~1.5 hours
-- **Documentation & Polish**: ~0.5 hours
+- **Architecture & Setup**: 30m
+- **Step 1 (Extraction Logic)**: ~1 hour
+- **Step 2 (Strategy Prompts)**: ~1.5 hours
+- **DUI & Integration:**: ~30 minutes
 
 ### Demo Brands Suggested
 
