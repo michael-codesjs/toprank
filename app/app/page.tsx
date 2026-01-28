@@ -149,7 +149,7 @@ export default function Home() {
                   AGENTIC AUDIT
                 </h1>
                 <p className="text-white/40 text-lg md:text-xl font-light tracking-tight max-w-lg mx-auto leading-relaxed">
-                  Edit a brands amazon presense with AI.
+                  Audit a brands amazon presense with AI.
                 </p>
               </div>
 
