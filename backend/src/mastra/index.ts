@@ -1,7 +1,9 @@
 import 'dotenv/config';
 import { Mastra } from '@mastra/core';
-import { extractorAgent } from './agents/extractor';
+import { analystAgent } from './agents/analyst';
+import { brandAuditWorkflow } from './workflows';
 
 export const mastra = new Mastra({
-  agents: { extractorAgent },
+  agents: { analystAgent },
+  workflows: { brandAuditWorkflow },
 });

@@ -8,7 +8,7 @@ const AmazonSearchInput = z.object({
 
 export const amazonSearchTool = createTool({
   id: 'amazonSearch',
-  description: 'Searches Amazon for a brand name using Serper.dev',
+  description: 'Searches Amazon for a brand name using SerpApi',
   inputSchema: AmazonSearchInput as any,
   execute: async ({ brandName }) => {
     // const { brandName } = input;

@@ -11,7 +11,8 @@
     "build": "tsc",
     "start": "node dist/src/index.js",
     "lint": "eslint src --ext .ts,.tsx",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test": "npx tsx scripts/test-step2.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.28",
