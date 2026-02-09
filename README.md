@@ -41,7 +41,7 @@ cp .env.example .env
 # SERPER_API_KEY=...
 
 npm install
-npm run mastra:dev
+npm run dev
 ```
 
 _The backend runs on http://localhost:8000._
